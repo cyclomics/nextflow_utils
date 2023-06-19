@@ -2,7 +2,7 @@
 
 include {
     TrimPolyATails
-} from './primary/modules/cutadapt'
+} from './sequence_analysis/modules/cutadapt'
 
 // Cyclomics Nextflow utils primary analysis example
 

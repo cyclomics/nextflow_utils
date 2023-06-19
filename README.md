@@ -20,9 +20,12 @@ For each fastq, containing at least 1 sequence to extract reads from we expect t
 1. Fastq ID
 1. Fastq file object
 
-### Primary
+### Sequence analysis
 Here we analyze the sequence itself, eg. we look for the presence of barcode sequences, adapters or specific read lengths.
 The input and output of these analyses are symetric, allowing easy chaining of different steps.
+
+#### Naming convention
+tbd
 
 #### Input patern
 For each fastq we expect the following data in  this exact order:
@@ -36,8 +39,11 @@ Another tuple or value, specific to the analysis, eg a value or a file
 1. Fastq ID
 1. Fastq file object
 
-### Secondary
-Abc
+### parse_covert
+Workflows and modules to convert data structures from one to another. A good example of this is mapping against a reference genome. 
+
+#### Naming convention
+tbd
 
 #### Input patern
 For each fastq we expect the following data in  this exact order:
@@ -51,8 +57,9 @@ Another tuple or value, specific to the analysis, eg a value or a file
 1. Fastq ID
 1. New format file, e.g. bam file.
 
-### Tertiary
-Abc
+### Post Hoc
+Code to perform additional actions, wheter its enriching or filtering, on the input data. eg Checking cosmic id's in a vcf using an API. 
 
-### Quaternary
-Abc
+### Reporting
+Code for visualization and reporting of the results.
+
