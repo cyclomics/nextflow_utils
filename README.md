@@ -12,10 +12,11 @@ For each fastq, containing at least 1 sequence to extract reads from we expect t
 1. Sample ID
 1. Fastq ID
 1. Fastq file object
+And optionally the following as seperate inputs:
 1. Synthtic DNA subunit file object e.g. backbone
 1. Reference genome file object
 
-#### Output patern
+#### Output patern 
 1. Sample ID
 1. Fastq ID
 1. Fastq file object
