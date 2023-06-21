@@ -1,11 +1,22 @@
-process Protocol{
-    // Example of IO for each process
-    input:
-        tuple val(sample), val(ID), path(fq)
-    output:
-        tuple val(sample), val(ID), path("*.fq")
-    script:
-        """
-        cat $fq > ${sample}_${ID}_protocol.fq
-        """
+
+include {
+    CygnusConsensus
+ } from "./modules/cygnus"
+
+
+include {
+    RotateBySequence
+} from "../parse_convert/modules/rotators"
+
+workflow Cygnus {
+    take:
+        reads
+        adapters
+    main:
+        cygnus_consensus = CygnusConsensus(reads)
+        RotateBySequence(cygnus_consensus)
+
+    emit:
+        cygnus_consensus
+
 }
