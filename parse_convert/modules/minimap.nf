@@ -1,0 +1,47 @@
+#!/usr/bin/env nextflow
+nextflow.enable.dsl = 2
+
+process Minimap2Index{
+    // publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
+    label 'few_memory_intensive'
+    
+     input:
+        path(reference_genome)
+    
+    output:
+        path("${reference_genome.simpleName}.mmi")
+
+    script:
+        """
+        minimap2 -ax map-ont -t ${task.cpus} -d ${reference_genome.simpleName}.mmi $reference_genome
+        """
+}
+
+process Minimap2AlignAdaptive{
+    // publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
+    label 'minimap_large'
+
+    //  apply at least 1 Gb of memory to the process, otherwise we apply two-four times the size of the reference genome mmi
+    memory {reference_genome.size() > 31_000_000_000 ? "30GB" : "${reference_genome.size() * (1 + task.attempt)}B"}
+    // memory "32 GB"
+    // small jobs get 4 cores, big ones 8
+    cpus (params.economy_mode == true ? 2 :{reference_genome.size() < 500_000_000 ? 4 : 8 })
+    
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
+
+
+    input:
+        each path(fastq)
+        path(reference_genome)
+    
+    output:
+        tuple val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+
+    script:
+        """
+        minimap2 -ax map-ont -t ${task.cpus} $reference_genome $fastq > tmp.sam 
+        samtools sort -o ${fastq.simpleName}.bam tmp.sam
+        rm tmp.sam
+        """
+}

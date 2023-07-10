@@ -1,8 +1,8 @@
-process RotateBySequence{
-     input:
-        tuple val(sample), val(ID), path(fq)
+process RotateBySequence {
+    input:
+        tuple val(ID), path(fq)
     output:
-        tuple val(sample), val(ID), path("*.rotated.fq")
+        tuple val(ID), path("*.rotated.fq")
     script:
     """
     if [[ -f "${params.rotator_location}/rotate_by_sequence.py" ]]; then

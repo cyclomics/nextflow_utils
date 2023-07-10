@@ -1,8 +1,11 @@
-process CygnusConsensus{
+#!/usr/bin/env nextflow
+nextflow.enable.dsl = 2
+
+process Cygnus {
     input:
-        tuple val(sample), val(ID), path(fq)
+        tuple val(ID), path(fq)
     output:
-        tuple val(sample), val(ID), path("*.cygnus.fq.gz"), path("*.cygnus.rejects.fq.gz")
+        tuple val(ID), path("*.cygnus.fq.gz")
     script:
         // Check if python file for cygnus exist in expected location, execute it when found 
         """
