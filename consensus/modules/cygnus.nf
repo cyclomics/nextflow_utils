@@ -3,9 +3,9 @@ nextflow.enable.dsl = 2
 
 process Cygnus {
     input:
-        tuple val(ID), path(fq)
+        tuple val(sample_id), val(fq_id), path(fq)
     output:
-        tuple val(ID), path("*.cygnus.fq.gz")
+        tuple val(sample_id), val(fq_id), path("*.cygnus.fq.gz")
     script:
         // Check if python file for cygnus exist in expected location, execute it when found 
         """

@@ -1,12 +1,9 @@
+#!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
 include {
     MergeFasta
 } from "./modules/seqkit"
-
-include {
-    AnnotateBamYTags
-} from "./modules/annotate_bam.nf"
 
 include {
     Minimap2AlignAdaptive
@@ -16,145 +13,76 @@ include {
 include {
     BwaIndex
     BwaMemSorted
+    // SamtoolsMergeBams
 } from "./modules/bwa.nf"
-
-process Protocol {
-    // Example of IO for each process
-    input:
-        tuple val(sample), val(ID), path(fq)
-    output:
-        tuple val(sample), val(ID), path("*.fq")
-    script:
-        """
-        cat $fq > ${sample}_${ID}_protocol.fq
-        """
-}
-
-process Reference_info {
-    publishDir "${params.output_dir}/QC", mode: 'copy'
-    label 'many_cpu_medium'
-
-    input:
-        path fasta
-
-    output:
-        path "reference_info.txt"
-
-    script:
-        """
-        echo "--------- md5 hash info ---------" >> reference_info.txt
-        md5sum $fasta >> reference_info.txt
-        echo "--------- assembly info ---------" >> reference_info.txt
-        seqkit fx2tab --length --name --header-line --seq-hash $fasta >> reference_info.txt
-        """
-}
 
 workflow PrepareGenome {
     take:
-        reference_genome
-        reference_genome_name
+        reference
+        reference_name
         backbones_fasta
+
     main:
-        if (reference_genome_name.endsWith('.txt')) {
+        if (reference_name.endsWith('.txt')) {
             println("txt reference, not implemented. Exiting...")
             genome = "missing"
             exit(1)
         }
-        else if (reference_genome_name.endsWith('.gz')) {
+        else if (reference_name.endsWith('.gz')) {
             println("gzipped reference, not implemented. Exiting...")
             genome = "missing"
             exit(1)
         }
         else {
-            genome = reference_genome
+            genome = reference
         }
+
         MergeFasta(genome, backbones_fasta)
         IndexCombined(MergeFasta.out)
-        Reference_info(MergeFasta.out)
-
-        if (params.alignment == "bwamem" && reference_genome_indexes.size < bwa_index_file_count) {
-            println "==================================="
-            println "Warning! BWA index files are missing for the reference genome, This will slowdown execution in a major way."
-            println "==================================="
-            println ""
-            println ""
-            bwa_index = BwaIndex(reference_genome)
-        }
         
     emit:
         mmi_combi = IndexCombined.out
         fasta_combi = MergeFasta.out
-        fasta_ref = reference_genome
-        bwa_index = 
 }
 
-workflow BWAAlign{
+workflow Minimap2Align {
     take:
         reads
-        reference_genome
-        reference_genome_indexes
-        jsons
+        reference
 
     main:
-        bwa_index_file_count = 5
-        // We do a smaller than since there might be a .fai file as well!
-        if (reference_genome_indexes.size < bwa_index_file_count) {
-            println "==================================="
-            println "Warning! BWA index files are missing for the reference genome, This will slowdown execution in a major way."
-            println "==================================="
-            println ""
-            println ""
-            reference_genome_indexes = BwaIndex(reference_genome)
-        }
-        
+        Minimap2AlignAdaptive(reads.map(it -> it[1]), reference)
         id = reads.first().map(it -> it[0])
-        id = id.map(it -> it.split('_')[0])
-        reads_fastq = reads.map(it -> it[1])
-        BwaMemSorted(reads_fastq, reference_genome, reference_genome_indexes.collect() )
-
-        // This
-        if (params.consensus_calling == "cycas") {
-            // For now we only do Y tag addition for cycas
-            metadata_pairs = BwaMemSorted.out.join(jsons)
-	        AnnotateBamYTags(metadata_pairs)
-            bams = AnnotateBamYTags.out.map(it -> it[1]).collect()
-        }
-        else {
-            bams = BwaMemSorted.out
-        }
-        
-        SamtoolsMergeBams(id, bams.collect())
+        id = id.map(it -> it.split('_')[0])       
+        SamtoolsMergeBams(id, Minimap2AlignAdaptive.out)
 
     emit:
         bam = SamtoolsMergeBams.out
 }
 
-workflow Minimap2Align {
-    // Call minimap2 on all reads files (tuple(x,bam)) convert to bam and merge using samtools.
-    // Adds metadata tags (eg YM) from metadata
-    // Will create a single bam given filenames like FAS12345_blabla : FAS12345.bam
+workflow BWAAlign{
     take:
         reads
-        reference_genome
-        jsons
+        reference
 
     main:
-        Minimap2AlignAdaptive(reads.map(it -> it[1]), reference_genome)
-        id = reads.first().map(it -> it[0])
-        id = id.map(it -> it.split('_')[0])
-
-        if (params.consensus_calling == "cycas") {
-            // For now we only do Y tag addition for cycas
-            metadata_pairs = Minimap2AlignAdaptive.out.join(jsons)
-            AnnotateBamYTags(metadata_pairs)
-            bams = AnnotateBamYTags.out.map(it -> it[1]).collect()
-        }
-        else {
-            bams = Minimap2AlignAdaptive.out
+        bwa_idx = file("${params.reference}.{,amb,ann,bwt,pac,sa}")
+        bwa_index_file_count = 5
+        // We do a smaller than since there might be a .fai file as well!
+        if (bwa_idx.size < bwa_index_file_count) {
+            println "==================================="
+            println "Warning! BWA index files are missing for the reference genome, This will slowdown execution in a major way."
+            println "==================================="
+            println ""
+            println ""
+            bwa_idx = BwaIndex(reference)
         }
         
-        SamtoolsMergeBams(id, bams)
-
+        id = reads.first().map(it -> it[0])
+        id = id.map(it -> it.split('_')[0])
+        reads_fastq = reads.map(it -> it[1])
+        BwaMemSorted(reads_fastq, reference, bwa_idx.collect())
+        SamtoolsMergeBams(id, BwaMemSorted.out.collect())
 
     emit:
         bam = SamtoolsMergeBams.out

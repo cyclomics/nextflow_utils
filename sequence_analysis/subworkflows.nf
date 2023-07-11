@@ -1,3 +1,4 @@
+#!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
 include {
@@ -6,21 +7,13 @@ include {
 
 include {
     AnnotateBamXTags
-} from "./modules/annotate_bam.nf"
+} from "./modules/annotate_bam"
 
-process Protocol{
-    // Example of IO for each process
-    input:
-        tuple val(sample), val(ID), path(fq)
-    output:
-        tuple val(sample), val(ID), path("*.fq")
-    script:
-        """
-        cat $fq > ${sample}_${ID}_protocol.fq
-        """
-}
+include {
+    BamTagFilter
+} from "./modules/samtools"
 
-workflow FilterWithAdapterDetection{
+workflow FilterWithAdapterDetection {
     take:
         read_fq_ch
 
@@ -37,24 +30,25 @@ workflow FilterWithAdapterDetection{
         FilterShortReads.out
 }
 
-workflow AnnotateBam{
+workflow AnnotateBam {
     take:
-        reads
-        sequencing_summary
+        bam
 
     main:
-        AnnotateBamXTags(reads, sequencing_summary)
+        seqsum = Channel.fromPath(params.sequencing_summary_path, checkIfExists: true)
+        AnnotateBamXTags(bam, seqsum)
+        
     emit:
         AnnotateBamXTags.out
 }
 
-workflow FilterBam{
+workflow FilterBam {
     take:
-        annotated_bam
-        minimun_repeat_count
+        bam
 
     main:
-        BamTagFilter(annotated_bam, 'YM', minimun_repeat_count)
+        BamTagFilter(bam, 'YM', params.min_repeat_count)
+
     emit:
         BamTagFilter.out
 }

@@ -7,15 +7,14 @@ process Cycas {
     label 'many_low_cpu_tiny_mem'
 
     input:
-        tuple val(X), path(bam), path(bai)
+        tuple val(sample_id), val(fq_id), path(bam), path(bai)
 
     output:
-        tuple val(X), path("${bam.SimpleName}.consensus.fastq")
+        tuple val(sample_id), val(fq_id), path("${bam.SimpleName}.consensus.fastq")
 
     script:
-        
         """
-        mkdir plots
+        mkdir -p plots
         python $params.cycas_location consensus --bam-file $bam --output ${bam.SimpleName}.consensus.fastq --metadata-json  ${bam.SimpleName}.metadata.json
         """
     }
