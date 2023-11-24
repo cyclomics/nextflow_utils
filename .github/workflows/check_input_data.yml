@@ -23,8 +23,8 @@ jobs:
 
       - name: List test data
         run: |
-          ls nextflow_utils/example_datasets/example_consensus_reads  
-          ls nextflow_utils/example_datasets/example_native_reads  
+          ls example_datasets/example_consensus_reads/  
+          ls example_datasets/example_native_reads/
 
       # - name: Obtain seqkit stats
       #   run: seqkit stats testing/data/fastq_pass/*
