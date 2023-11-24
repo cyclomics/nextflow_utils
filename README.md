@@ -72,3 +72,26 @@ Code to perform additional actions, wheter its enriching or filtering, on the in
 ### Reporting
 Code for visualization and reporting of the results.
 
+
+# Testing lessons learned with nf-test:
+
+1. Dont compare to large objects, as this makes the stdout hard to read in case of a test failure:
+    ```json
+    def first_line = lines.get(0)
+    assert first_line == "@64fee029-4..."
+    ```
+    is much better than:
+    ```json
+    assert lines.get(0) == "@64fee029-4..."
+    ```
+    as the later will cause the entire lines object to be dumped into stdout, while the prior will only put the first line into your stdout.
+
+2. Regex is kinda weird and undocumented: this fails:
+    ```json
+    assert output_file == ".*/empty_filtered.fastq"
+    ```
+    Buth this passes:
+    ```json
+    assert output_file ==~ ".*/empty_filtered.fastq"
+    ```
+

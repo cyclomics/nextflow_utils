@@ -1,44 +1,147 @@
 nextflow_process {
-
-    name "Test sequence analysis seqkit processes"
+    name "Test sequence analysis seqkit process: FilterShortReads"
     script "sequence_analysis/modules/seqkit.nf"
-    process "Protocol"
-
-    test("Test process protocol") {
-
+    process "FilterShortReads"
+     test("Filter to 1kb plus") {
         when {
-            params {
-                // define parameters here. Example:
-                // outdir = "tests/results"
+            params{
+                filtering{
+                    minimun_raw_length = 1_000
+                }
             }
             process {
                 """
                 ID = "SOME_ID_1"
                 sample = "SOME_ID_2"
-                fq_file = file("../../../example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
-
+                fq_file = file("../../../example_datasets/example_native_reads/fastq_pass/FAW79986_pass_dbcafcd9_40623079_0.fastq.gz")
                 input[0] = Channel.of([ID,sample,fq_file])
                 """
             }
         }
-
         then {
             // Test the defaults
             assert process.success
             assert process.out.size() == 1
             assert process.out.get('0')[0].size() == 3
 
+
             // Test the output propagation
-            assert process.out['0'][0][0] == "SOME_ID_1"
-            assert process.out['0'][0][1] == "SOME_ID_2"
-            assert process.out['0'][0][2].split("/")[-1] == "SOME_ID_1_SOME_ID_2_protocol.fq"
+            def output_tuple = process.out['0'][0]
+            assert output_tuple[0] == "SOME_ID_1"
+            assert output_tuple[1] == "SOME_ID_2"
+            def output_file = output_tuple[2]
+            assert output_file.split("/")[-1] == "FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq"
             
-            // test the md5 on the fly and deterministic against the known md5
-            assert path(process.out['0'][0][2]).md5 == path("example_datasets/example_consensus_reads/reads/ABC0001_0.fastq").md5
-            assert path(process.out['0'][0][2]).md5 == "d72719416ccb81b232389bbaf35221dd"
+            // We know that 91 reads are shorter than 1kb in fastq FAW79986_0.
+            // So there are 3908 reads, each with 4 lines in the out fq
+            def reads_in_fq = 4000
+            def short_reads = 91
+            def lines = path(output_file).readLines()
+            def line_count = lines.size()
+            // Test the expected line count
+            assert (line_count == (reads_in_fq - short_reads ) *4 )
 
+            def first_line = lines.get(0)
+            assert first_line == "@64fee029-4441-4030-beb8-350294f0f50f runid=406230799eda6da3e8cd81dc83d197141243f5d5 read=14 ch=423 start_time=2023-05-04T16:34:55.717260+02:00 flow_cell_id=FAW79986 protocol_group_id=CycloSeq_test sample_id=standard_kit parent_read_id=64fee029-4441-4030-beb8-350294f0f50f basecall_model_version_id=dna_r10.4.1_e8.2_260bps_sup@v3.5.2"
         }
+    }
+    test("Empty input fq file check") {
+        when {
+            params{
+                filtering{
+                    minimun_raw_length = 1_000_000_000
+                }
+            }
+            process {
+                """
+                ID = "SOME_ID_1"
+                sample = "SOME_ID_2"
+                fq_file = file("../../../example_datasets/empty.fq")
+                input[0] = Channel.of([ID,sample,fq_file])
+                """
+            }
+        }
+        then {
+            // Test the defaults
+            assert process.success
+            assert process.out.size() == 1
+            assert process.out.get('0')[0].size() == 3
+            def output_tuple = process.out['0'][0]
+            def output_file = output_tuple[2]
 
+            assert output_file ==~ ".*/empty_filtered.fastq"
+            def file_content = path(output_file).readLines()
+            assert file_content == []
+        }
     }
 
+    // test("Empty input fq.gz file check") {
+    //     when {
+    //         params{
+    //             filtering{
+    //                 minimun_raw_length = 1_000_000_000
+    //             }
+    //         }
+    //         process {
+    //             """
+    //             ID = "SOME_ID_1"
+    //             sample = "SOME_ID_2"
+    //             fq_file = file("../../../example_datasets/empty.fq.gz")
+    //             input[0] = Channel.of([ID,sample,fq_file])
+    //             """
+    //         }
+    //     }
+    //     then {
+    //         // Test the defaults
+    //         assert process.success
+    //         assert process.out.size() == 1
+    //         assert process.out.get('0')[0].size() == 3
+
+    //         // Test the output propagation
+    //         def output_tuple = process.out['0'][0]
+    //         assert output_tuple[0] == "SOME_ID_1"
+    //         assert output_tuple[1] == "SOME_ID_2"
+    //         def output_file = output_tuple[2]
+    //         assert output_file.split("/")[-1] == "SOME_ID_1_SOME_ID_2_protocol.fq"
+            
+    //         // test the md5 on the fly and deterministic against the known md5
+    //         assert path(output_file).md5 == path("example_datasets/example_consensus_reads/reads/ABC0001_0.fastq").md5
+    //         assert path(output_file).md5 == "d72719416ccb81b232389bbaf35221dd"
+    //     }
+    // }
+    // test("Empty output fq file check") {
+    //     when {
+    //         params{
+    //             filtering{
+    //                 minimun_raw_length = 1_000_000_000
+    //             }
+    //         }
+    //         process {
+    //             """
+    //             ID = "SOME_ID_1"
+    //             sample = "SOME_ID_2"
+    //             fq_file = file("../../../example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
+
+    //             input[0] = Channel.of([ID,sample,fq_file])
+    //             """
+    //         }
+    //     }
+    //     then {
+    //         // Test the defaults
+    //         assert process.success
+    //         assert process.out.size() == 1
+    //         assert process.out.get('0')[0].size() == 3
+
+    //         // Test the output propagation
+    //         def output_tuple = process.out['0'][0]
+    //         assert output_tuple[0] == "SOME_ID_1"
+    //         assert output_tuple[1] == "SOME_ID_2"
+    //         def output_file = output_tuple[2]
+    //         assert output_file.split("/")[-1] == "SOME_ID_1_SOME_ID_2_protocol.fq"
+            
+    //         // test the md5 on the fly and deterministic against the known md5
+    //         assert path(output_file).md5 == path("example_datasets/example_consensus_reads/reads/ABC0001_0.fastq").md5
+    //         assert path(output_file).md5 == "d72719416ccb81b232389bbaf35221dd"
+    //     }
+    // }
 }
