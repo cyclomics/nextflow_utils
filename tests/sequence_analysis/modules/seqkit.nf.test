@@ -1,0 +1,44 @@
+nextflow_process {
+
+    name "Test sequence analysis seqkit processes"
+    script "sequence_analysis/modules/seqkit.nf"
+    process "Protocol"
+
+    test("Test process protocol") {
+
+        when {
+            params {
+                // define parameters here. Example:
+                // outdir = "tests/results"
+            }
+            process {
+                """
+                ID = "SOME_ID_1"
+                sample = "SOME_ID_2"
+                fq_file = file("../../../example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
+
+                input[0] = Channel.of([ID,sample,fq_file])
+                """
+            }
+        }
+
+        then {
+            // Test the defaults
+            assert process.success
+            assert process.out.size() == 1
+            assert process.out.get('0')[0].size() == 3
+
+            // Test the output propagation
+            assert process.out['0'][0][0] == "SOME_ID_1"
+            assert process.out['0'][0][1] == "SOME_ID_2"
+            assert process.out['0'][0][2].split("/")[-1] == "SOME_ID_1_SOME_ID_2_protocol.fq"
+            
+            // test the md5 on the fly and deterministic against the known md5
+            assert path(process.out['0'][0][2]).md5 == path("example_datasets/example_consensus_reads/reads/ABC0001_0.fastq").md5
+            assert path(process.out['0'][0][2]).md5 == "d72719416ccb81b232389bbaf35221dd"
+
+        }
+
+    }
+
+}
