@@ -7,8 +7,8 @@ This repo contains resuable processes and workflows for other nextflow pipelines
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
 [![nf-test](https://img.shields.io/badge/tested_with-nf--test-337ab7.svg)](https://code.askimed.com/nf-test)
-![Main CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/check_input_data.yml/badge.svg)
-![development CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/check_input_data.yml/badge.svg)
+![Main CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/continuous_integration.yml/badge.svg?branch=main)
+![development CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/continuous_integration.yml/badge.svg?branch=dev)
 
 ## Folders
 
