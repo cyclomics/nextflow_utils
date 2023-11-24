@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Just a test
+    name: Run Nextflow unittests using nf-test
     runs-on: ubuntu-latest
 
     steps:
