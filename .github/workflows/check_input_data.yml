@@ -14,12 +14,6 @@ jobs:
   build:
     name: Just a test
     runs-on: ubuntu-latest
-    # container:
-    #   image: cyclomics/cyclomicsseq-dev:0.1.0
-    #   options: --user root
-    #   credentials:
-    #     username: ${{ secrets.DOCKERHUB_DEV_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_DEV_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v2
@@ -28,15 +22,17 @@ jobs:
         uses: nf-core/setup-nextflow@v1
 
       - name: List test data
-        run: ls testing/data/fastq_pass/
+        run: |
+          ls nextflow_utils/example_datasets/example_consensus_reads  
+          ls nextflow_utils/example_datasets/example_native_reads  
 
       # - name: Obtain seqkit stats
       #   run: seqkit stats testing/data/fastq_pass/*
 
-      - name: Run simple pipeline in docker
-        run: |
-          nextflow -v
-          nextflow run main.nf --read_folder testing/data/fastq_pass --output_folder ignore_results1 -profile docker
+      # - name: Run simple pipeline in docker
+      #   run: |
+      #     nextflow -v
+      #     nextflow run main.nf --read_folder testing/data/fastq_pass --output_folder ignore_results1 -profile docker
 
       - name: Setup nf-test
         run: |
