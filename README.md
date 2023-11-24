@@ -75,6 +75,8 @@ Code for visualization and reporting of the results.
 
 # Testing lessons learned with nf-test:
 
+1. Only one 'nextflow_process' or 'nextflow_process' can be present per file.
+1. The output of your tuple is nested pretty deep in the process.out object.
 1. Dont compare to large objects, as this makes the stdout hard to read in case of a test failure:
     ```json
     def first_line = lines.get(0)
@@ -86,7 +88,7 @@ Code for visualization and reporting of the results.
     ```
     as the later will cause the entire lines object to be dumped into stdout, while the prior will only put the first line into your stdout.
 
-2. Regex is kinda weird and undocumented: this fails:
+1. Regex is kinda weird and undocumented: this fails:
     ```json
     assert output_file == ".*/empty_filtered.fastq"
     ```
