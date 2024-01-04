@@ -25,6 +25,16 @@ include {
     RotateBySequence
 } from "../parse_convert/modules/rotators"
 
+include {
+    Minimap2AlignAdaptiveParameterized
+} from "../parse_convert/modules/minimap"
+
+include {
+    SamtoolsIndexWithID
+    PrimaryMappedFilter
+    MapqAndNMFilter
+} from "./modules/samtools"
+
 
 workflow CygnusConsensus {
     take:
@@ -52,8 +62,8 @@ workflow CycasConsensus {
         Cycas(MapqAndNMFilter.out)
 
     emit:
-        fastq = Cycas.out
-        // json = Cycas.out.map( it -> tuple(it[0], it[2]))
+        fastq = Cycas.out.map(it -> it.take(2))
+        json = Cycas.out.map(it -> tuple(it[0], it[2]))
 }
 
 workflow TidehunterConsensus {
