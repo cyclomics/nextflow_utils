@@ -1,0 +1,29 @@
+nextflow_process {
+
+    name "Test Process Minimap2AlignAdaptiveParameterized"
+    script "parse_convert/modules/minimap.nf"
+    process "Minimap2AlignAdaptiveParameterized"
+    
+    
+    test("Minimap test output") {
+
+        when {
+            process {
+                """
+                fq_file = file("$baseDir/example_datasets/example_native_reads/fastq_filtered/FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq")
+                ref = file("$baseDir/example_datasets/reference/pJPVCS_BBCS.mmi")
+
+                input[0] = Channel.of(fq_file)
+                input[1] = Channel.of(ref)
+                """
+            }
+        }
+        then {
+            assert process.success
+
+            with(process.out[0]) {
+                assert path(get(0)[1]).md5 == "52245f75cbcf1e143cb005bbbab8776d"
+            }
+        }
+    }
+}

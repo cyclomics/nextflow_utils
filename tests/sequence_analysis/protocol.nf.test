@@ -8,7 +8,7 @@ nextflow_process {
                 """
                 ID = "SOME_ID_1"
                 sample = "SOME_ID_2"
-                fq_file = file("../../../example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
+                fq_file = file("$baseDir/example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
 
                 input[0] = Channel.of([ID,sample,fq_file])
                 """
