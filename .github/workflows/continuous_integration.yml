@@ -46,4 +46,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_DEV_PASSWORD }}
 
       - name: Run nf-test
-        run: nf-test test --profile docker
+        run: nf-test test --profile docker --economy_mode
