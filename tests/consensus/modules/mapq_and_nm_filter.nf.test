@@ -1,0 +1,32 @@
+nextflow_process {
+
+    name "Test Process MapqAndNMFilter"
+    script "consensus/modules/samtools.nf"
+    process "MapqAndNMFilter"
+    
+    
+    test("Filtering Mapq and NM") {
+
+        when {
+            process {
+                """
+                sample_id = "test_sample"
+                bam_file = file("$baseDir/example_datasets/example_native_reads/bam/FAW79986_pass_dbcafcd9_40623079_0_filtered.primary_mapped.bam")
+                bai_file = file("$baseDir/example_datasets/example_native_reads/bam/FAW79986_pass_dbcafcd9_40623079_0_filtered.primary_mapped.bam.bai")
+                
+                input[0] = Channel.of([sample_id, bam_file, bai_file])
+                """
+            }
+        }
+        then {
+            assert process.success
+            
+            def bai_filename = "test_sample.NM_50_mapq_20.bam.bai"
+            with(process.out[0]) {
+                assert path(get(0)[1]).md5 == "575747c8451f1ec0ae8227183691193e"
+                assert path(get(0)[2]).getFileName().toString() == bai_filename
+                assert path(get(0)[2]).size() > 0
+            }
+        }
+    }
+}

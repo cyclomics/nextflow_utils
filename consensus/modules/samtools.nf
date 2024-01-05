@@ -8,7 +8,7 @@ process SamtoolsIndexWithID{
         tuple val(x), path(input_bam) 
 
     output:
-       tuple val(x), path(input_bam), path("*.bai")
+        tuple val(x), path(input_bam), path("*.bai")
 
     script:
         """
