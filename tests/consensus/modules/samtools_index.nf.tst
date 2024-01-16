@@ -19,11 +19,11 @@ nextflow_process {
         }
         then {
             assert process.success
+            assert snapshot(process.out).match()
             
             def bai_filename = "FAW79986_pass_dbcafcd9_40623079_0_filtered.bam.bai"
             with(process.out[0]) {
                 assert path(get(0)[2]).getFileName().toString() == bai_filename
-                assert path(get(0)[2]).size() > 0
             }
         }
     }

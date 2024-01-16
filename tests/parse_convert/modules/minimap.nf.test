@@ -10,7 +10,7 @@ nextflow_process {
         when {
             process {
                 """
-                fq_file = file("$baseDir/example_datasets/example_native_reads/fastq_filtered/FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq")
+                fq_file = file("$baseDir/example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
                 ref = file("$baseDir/example_datasets/reference/pJPVCS_BBCS.mmi")
 
                 input[0] = Channel.of(fq_file)
@@ -20,10 +20,11 @@ nextflow_process {
         }
         then {
             assert process.success
+            assert snapshot(process.out).match()
 
-            with(process.out[0]) {
-                assert path(get(0)[1]).md5 == "6dff2faaa2f7a1ae3b1d568c71f26ed8"
-            }
+            // with(process.out[0]) {
+            //     assert path(get(0)[1]).md5 == "6dff2faaa2f7a1ae3b1d568c71f26ed8"
+            // }
         }
     }
 }

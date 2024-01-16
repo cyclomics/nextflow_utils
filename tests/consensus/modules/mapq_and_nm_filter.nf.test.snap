@@ -1,0 +1,16 @@
+{
+    "Filtering Mapq and NM": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "test_sample",
+                        "test_sample.NM_50_mapq_20.bam:md5,575747c8451f1ec0ae8227183691193e",
+                        "test_sample.NM_50_mapq_20.bam.bai:md5,104b5f0c9e6fb7fb4a9a56c0ad709fb3"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2024-01-10T16:54:34.647854"
+    }
+}

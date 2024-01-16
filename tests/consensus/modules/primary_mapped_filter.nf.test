@@ -20,12 +20,11 @@ nextflow_process {
         }
         then {
             assert process.success
+            assert snapshot(process.out).match()
             
             def bai_filename = "test_sample.primary_mapped.bam.bai"
             with(process.out[0]) {
-                assert path(get(0)[1]).md5 == "a4df4798720072ca05d23674957c7f2e"
                 assert path(get(0)[2]).getFileName().toString() == bai_filename
-                assert path(get(0)[2]).size() > 0
             }
         }
     }

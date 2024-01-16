@@ -1,0 +1,29 @@
+nextflow_workflow {
+
+    name "Test Mininmap2Align"
+    script "parse_convert/subworkflows.nf"
+    workflow "Minimap2Align"
+
+    test("Check if consensus mapping to reference with Minimap2 is correct") {
+
+        when {
+            workflow {
+                """
+                fq_file = file("$baseDir/example_datasets/example_native_reads/fastq_filtered/FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq")
+                ref = file("$baseDir/example_datasets/reference/pJPVCS_BBCS.mmi")
+
+                input[0] = Channel.of(["my_sample", fq_file])
+                input[1] = Channel.of(ref)
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+
+            // with(workflow.out.fastq) {
+            //    assert path(get(0)[1]).readLines().size() == 11493
+            // }
+        }
+    }
+}

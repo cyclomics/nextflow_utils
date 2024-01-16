@@ -1,0 +1,16 @@
+{
+    "Cycas consensus": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "test_sample",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.consensus.fastq:md5,a4fc82a8af79cbceb83d7ea99e7ae48f",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.metadata.json:md5,9a1f2dfc99a0f6bb4a6b2f11dd6cec5c"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2024-01-10T17:12:17.370452"
+    }
+}
