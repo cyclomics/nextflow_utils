@@ -51,19 +51,20 @@ workflow CygnusConsensus {
 
 workflow CycasConsensus {
     take:
-        reads_fastq
+        read_fastq
         reference_genome
 
     main:
-        Minimap2AlignAdaptiveParameterized(reads_fastq, reference_genome)
+        Minimap2AlignAdaptiveParameterized(read_fastq, reference_genome)
         SamtoolsIndexWithID(Minimap2AlignAdaptiveParameterized.out)
         PrimaryMappedFilter(SamtoolsIndexWithID.out)
         MapqAndNMFilter(PrimaryMappedFilter.out)
         Cycas(MapqAndNMFilter.out)
 
     emit:
-        fastq = Cycas.out.map(it -> it.take(2))
-        json = Cycas.out.map(it -> tuple(it[0], it[2]))
+        Cycas.out
+        // fastq = Cycas.out.map(it -> it.take(3))
+        // json = Cycas.out.map(it -> tuple(it[0], it[3]))
 }
 
 workflow TidehunterConsensus {

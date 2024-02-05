@@ -30,13 +30,12 @@ process Minimap2AlignAdaptive{
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
-
     input:
-        each path(fastq)
+        tuple val(sample_id), val(file_id), path(fastq)
         path(reference_genome)
     
     output:
-        tuple val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+        tuple val(sample_id), val("${fastq.simpleName}"), path("${fastq.simpleName}.bam")
 
     script:
         """
@@ -58,11 +57,13 @@ process Minimap2AlignAdaptiveParameterized{
     maxRetries 3
 
     input:
-        each path(fastq)
+        // each path(fastq)
+        tuple val(sample_id), val(file_id), path(fastq)
         path(reference_genome)
-    
+
+
     output:
-        tuple val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+        tuple val(sample_id), val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
 
     script:
     // Lower parameters to increase data available to cycas

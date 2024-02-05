@@ -2,6 +2,7 @@ nextflow_process {
     name "Test sequence analysis seqkit process: FilterShortReads"
     script "sequence_analysis/modules/seqkit.nf"
     process "FilterShortReads"
+
      test("Filter to 1kb plus") {
         when {
             params{
@@ -11,10 +12,10 @@ nextflow_process {
             }
             process {
                 """
-                ID = "SOME_ID_1"
-                sample = "SOME_ID_2"
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
                 fq_file = file("../../../example_datasets/example_native_reads/fastq_pass/FAW79986_pass_dbcafcd9_40623079_0.fastq.gz")
-                input[0] = Channel.of([ID,sample,fq_file])
+                input[0] = Channel.of([sample_id, file_id, fq_file])
                 """
             }
         }
@@ -28,7 +29,7 @@ nextflow_process {
             // Test the output propagation
             def output_tuple = process.out['0'][0]
             assert output_tuple[0] == "SOME_ID_1"
-            assert output_tuple[1] == "SOME_ID_2"
+            assert output_tuple[1] == "FAW79986_pass_dbcafcd9_40623079_0_filtered"
             def output_file = output_tuple[2]
             assert output_file.split("/")[-1] == "FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq"
             
@@ -45,6 +46,7 @@ nextflow_process {
             assert first_line == "@64fee029-4441-4030-beb8-350294f0f50f runid=406230799eda6da3e8cd81dc83d197141243f5d5 read=14 ch=423 start_time=2023-05-04T16:34:55.717260+02:00 flow_cell_id=FAW79986 protocol_group_id=CycloSeq_test sample_id=standard_kit parent_read_id=64fee029-4441-4030-beb8-350294f0f50f basecall_model_version_id=dna_r10.4.1_e8.2_260bps_sup@v3.5.2"
         }
     }
+
     test("Empty input fq file check") {
         when {
             params{
@@ -54,10 +56,10 @@ nextflow_process {
             }
             process {
                 """
-                ID = "SOME_ID_1"
-                sample = "SOME_ID_2"
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
                 fq_file = file("../../../example_datasets/empty.fq")
-                input[0] = Channel.of([ID,sample,fq_file])
+                input[0] = Channel.of([sample_id, file_id, fq_file])
                 """
             }
         }
@@ -74,6 +76,7 @@ nextflow_process {
             assert file_content == []
         }
     }
+
     test("Empty input fq.gz file check") {
         when {
             params{
@@ -83,10 +86,10 @@ nextflow_process {
             }
             process {
                 """
-                ID = "SOME_ID_1"
-                sample = "SOME_ID_2"
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
                 fq_file = file("../../../example_datasets/empty.fq.gz")
-                input[0] = Channel.of([ID,sample,fq_file])
+                input[0] = Channel.of([sample_id, file_id, fq_file])
                 """
             }
         }
@@ -103,6 +106,7 @@ nextflow_process {
             assert file_content == []
         }
     }
+
     test("Empty output fq file check") {
         when {
             params{
@@ -112,11 +116,11 @@ nextflow_process {
             }
             process {
                 """
-                ID = "SOME_ID_1"
-                sample = "SOME_ID_2"
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
                 fq_file = file("../../../example_datasets/example_native_reads/fastq_pass/FAW79986_pass_dbcafcd9_40623079_0.fastq.gz")
 
-                input[0] = Channel.of([ID,sample,fq_file])
+                input[0] = Channel.of([sample_id, file_id, fq_file])
                 """
             }
         }

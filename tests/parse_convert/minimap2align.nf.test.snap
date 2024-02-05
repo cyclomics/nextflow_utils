@@ -1,0 +1,29 @@
+{
+    "Check if consensus mapping to reference with Minimap2 is correct": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "SOME_ID_1",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged.bam:md5,af60d97b5f741cc1bd5dbd4dcf79186e",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged.bam.bai:md5,af50a5bddeea3d0d936dec57940770e4"
+                    ]
+                ],
+                "bam": [
+                    [
+                        "SOME_ID_1",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged.bam:md5,af60d97b5f741cc1bd5dbd4dcf79186e",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.merged.bam.bai:md5,af50a5bddeea3d0d936dec57940770e4"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.1"
+        },
+        "timestamp": "2024-02-05T15:53:16.61924"
+    }
+}

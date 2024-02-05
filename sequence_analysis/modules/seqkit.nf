@@ -1,11 +1,12 @@
 
 process FilterShortReads{
     // Remove all reads shorter than filtering.minimun_raw_length
+    
     input:
-        path(fq)
+        tuple val(sample_id), val(file_id), path(fq)
 
     output:
-        path("${fq.simpleName}_filtered.fastq")
+        tuple val(sample_id), val("${fq.simpleName}_filtered"), path("${fq.simpleName}_filtered.fastq")
 
     script:
         """

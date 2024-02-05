@@ -8,16 +8,15 @@ process SamtoolsMergeBams{
     label 'many_cpu_medium'
 
     input:
-        val(X)
-        file(bam_in)
+        tuple val(sample_id), val(file_id), file(bam_in)
 
     output:
-        tuple val(X), path("${X}.merged.bam"), path("${X}.merged.bam.bai")
+        tuple val(sample_id), val("${bam_in.simpleName}.merged"), path("${bam_in.simpleName}.merged.bam"), path("${bam_in.simpleName}.merged.bam.bai")
     
     script:
     """
     ls
-    samtools merge -p -c -O bam ${X}.merged.bam \$(find . -name '*.bam')
-    samtools index ${X}.merged.bam
+    samtools merge -p -c -O bam ${bam_in.simpleName}.merged.bam \$(find . -name '*.bam')
+    samtools index ${bam_in.simpleName}.merged.bam
     """
 }

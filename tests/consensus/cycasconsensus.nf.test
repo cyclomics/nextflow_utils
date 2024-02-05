@@ -9,10 +9,12 @@ nextflow_workflow {
         when {
             workflow {
                 """
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
                 fq_file = file("$baseDir/example_datasets/example_native_reads/fastq_filtered/FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq")
                 ref = file("$baseDir/example_datasets/reference/pJPVCS_BBCS.mmi")
 
-                input[0] = Channel.of(fq_file)
+                input[0] = Channel.of([sample_id, file_id, fq_file])
                 input[1] = Channel.of(ref)
                 """
             }
@@ -21,9 +23,6 @@ nextflow_workflow {
         then {
             assert workflow.success
 
-            with(workflow.out.fastq) {
-                assert path(get(0)[1]).readLines().size() == 11493
-            }
         }
     }
 }

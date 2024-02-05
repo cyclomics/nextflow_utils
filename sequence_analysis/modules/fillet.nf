@@ -3,11 +3,11 @@ process SplitReadsOnAdapterSequence {
     label 'many_low_cpu_low_mem'
 
     input:
-        path(fastq)
+        tuple val(sample_id), val(file_id), path(fq)
 
     output:
-        path("results/${fastq.SimpleName}_split.fastq.gz")
-
+        tuple val(sample_id), val("${fq.simpleName}_split"), path("results/${fq.simpleName}_split.fastq.gz")
+        
     script:
         """
         duplex_tools split_on_adapter . results/ Native 
