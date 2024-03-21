@@ -72,3 +72,20 @@ process Minimap2AlignAdaptiveParameterized{
         rm tmp.sam
         """
 }
+
+process Minimap2Align{
+    // Use standard Minimap2 parameters for alignment, also works with .mmi files.
+    input:
+        tuple val(sample_id), val(fq_id), path(fq)
+        path(reference_genome)
+    
+    output:
+        tuple val(sample_id), val(fq_id), path("${fq.simpleName}.bam")
+
+    script:
+        """
+        minimap2 -ax map-ont -t ${task.cpus} $reference_genome $fq > tmp.sam 
+        samtools sort -o ${fq.simpleName}.bam tmp.sam
+        rm tmp.sam
+        """
+}

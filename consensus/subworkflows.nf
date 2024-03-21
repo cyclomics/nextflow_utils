@@ -22,11 +22,14 @@ include{
 } from "./modules/tidehunter"
 
 include {
+    RotateByAlignment
     RotateBySequence
 } from "../parse_convert/modules/rotators"
 
 include {
     Minimap2AlignAdaptiveParameterized
+    Minimap2Align
+    Minimap2Index
 } from "../parse_convert/modules/minimap"
 
 include {
@@ -46,6 +49,38 @@ workflow CygnusConsensus {
 
     emit:
         fastq = RotateBySequence.out
+
+}
+
+workflow CygnusAlignedConsensus {
+    take:
+        reads_fastq
+        reference
+
+    main:
+        // 1. Create reads and index reference
+        Cygnus(reads_fastq)
+        Minimap2Index(reference)
+        ref_mmi = Minimap2Index.out.collect() // .collect() to turn into repeating value channel.
+        consensus = Cygnus.out
+        // 2. Align the reads
+        Minimap2Align(consensus, ref_mmi)
+        // 3. Rotate by alignment
+        RotateByAlignment(Minimap2Align.out)
+
+    emit:
+        fastq = RotateByAlignment.out
+
+}
+workflow CygnusPrimedConsensus {
+    take:
+        reads_fastq
+
+    main:
+        Cygnus(reads)
+
+    emit:
+        fastq = Cygnus.out
 
 }
 
