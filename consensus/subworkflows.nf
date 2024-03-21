@@ -58,13 +58,11 @@ workflow CygnusAlignedConsensus {
         reference
 
     main:
-        // 1. Create reads and index reference
+        // 1. Create reads
         Cygnus(reads_fastq)
-        Minimap2Index(reference)
-        ref_mmi = Minimap2Index.out.collect() // .collect() to turn into repeating value channel.
         consensus = Cygnus.out
         // 2. Align the reads
-        Minimap2Align(consensus, ref_mmi)
+        Minimap2Align(consensus, reference)
         // 3. Rotate by alignment
         RotateByAlignment(Minimap2Align.out)
 
