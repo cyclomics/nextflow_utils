@@ -1,1 +1,7 @@
+# ignore output of local nextflow runs
 .nextflow*
+work/*
+
+# ignore output of local runs of nf-tests
+.nf-test.log
+.nf-test/*

@@ -1,0 +1,32 @@
+nextflow_process {
+
+    name "Test Process SamtoolsIndexWithID"
+    script "consensus/modules/samtools.nf"
+    process "SamtoolsIndexWithID"
+    
+    
+    test("Samtools BAM indexing") {
+
+        when {
+            process {
+                """
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
+                bam_file = file("$baseDir/example_datasets/example_native_reads/bam/FAW79986_pass_dbcafcd9_40623079_0_filtered.bam")
+
+                input[0] = Channel.of([sample_id, file_id, bam_file])
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+            
+            def expected_bai = "FAW79986_pass_dbcafcd9_40623079_0_filtered.bam.bai"
+            with(process.out[0]) {
+                def result_bai = path(get(0)[3]).getFileName().toString()
+                assert result_bai == expected_bai
+            }
+        }
+    }
+}

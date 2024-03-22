@@ -1,0 +1,28 @@
+nextflow_process {
+
+    name "Test Process Minimap2AlignAdaptiveParameterized"
+    script "parse_convert/modules/minimap.nf"
+    process "Minimap2AlignAdaptiveParameterized"
+    
+    
+    test("Minimap test output") {
+
+        when {
+            process {
+                """
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
+                fq_file = file("$baseDir/example_datasets/example_consensus_reads/reads/ABC0001_0.fastq")
+                ref = file("$baseDir/example_datasets/reference/pJPVCS_BBCS.mmi")
+
+                input[0] = Channel.of([sample_id, file_id, fq_file])
+                input[1] = Channel.of(ref)
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+    }
+}

@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process Cycas"
+    script "consensus/modules/cycas.nf"
+    process "Cycas"
+    
+    
+    test("Cycas consensus") {
+
+        when {
+            process {
+                """
+                sample_id = "SOME_ID_1"
+                file_id = "SOME_ID_2"
+                bam_file = file("$baseDir/example_datasets/example_native_reads/bam/FAW79986_pass_dbcafcd9_40623079_0_filtered.NM_50_mapq_20.bam")
+                bai_file = file("$baseDir/example_datasets/example_native_reads/bam/FAW79986_pass_dbcafcd9_40623079_0_filtered.NM_50_mapq_20.bam.bai")
+
+                input[0] = Channel.of([sample_id, file_id, bam_file, bai_file])
+                """
+            }
+        }
+        then {
+            assert process.success
+            
+            with(process.out[0]) {
+                def n_lines = path(get(0)[2]).readLines().size()
+                assert n_lines == 11493
+            }
+        }
+    }
+}

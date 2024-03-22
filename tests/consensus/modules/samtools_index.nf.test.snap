@@ -1,0 +1,21 @@
+{
+    "Samtools BAM indexing": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "SOME_ID_1",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.bam:md5,52245f75cbcf1e143cb005bbbab8776d",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.bam.bai:md5,14debf7a36a39f9de48e2cddbd5b5b1e"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.1"
+        },
+        "timestamp": "2024-02-05T15:23:49.439919"
+    }
+}

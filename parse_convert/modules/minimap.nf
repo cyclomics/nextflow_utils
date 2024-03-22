@@ -30,18 +30,63 @@ process Minimap2AlignAdaptive{
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
-
     input:
-        each path(fastq)
+        tuple val(sample_id), val(file_id), path(fastq)
         path(reference_genome)
     
     output:
-        tuple val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+        tuple val(sample_id), val("${fastq.simpleName}"), path("${fastq.simpleName}.bam")
 
     script:
         """
         minimap2 -ax map-ont -t ${task.cpus} $reference_genome $fastq > tmp.sam 
         samtools sort -o ${fastq.simpleName}.bam tmp.sam
+        rm tmp.sam
+        """
+}
+
+process Minimap2AlignAdaptiveParameterized{
+    publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
+    label 'minimap_large'
+
+    memory {reference_genome.size() > 31_000_000_000 ? "30GB" : "${reference_genome.size() * (1 + task.attempt)}B"}
+    // small jobs get 4 cores, big ones 8
+    cpus (params.economy_mode == true ? 2 :{reference_genome.size() < 500_000_000 ? 4 : 8 })
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
+
+    input:
+        // each path(fastq)
+        tuple val(sample_id), val(file_id), path(fastq)
+        path(reference_genome)
+
+
+    output:
+        tuple val(sample_id), val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+
+    script:
+    // Lower parameters to increase data available to cycas
+        """
+        minimap2 -ax map-ont -t ${task.cpus} -m ${params.minimap2parameterized.min_chain_score} -n ${params.minimap2parameterized.min_chain_count} -s ${params.minimap2parameterized.min_peak_aln_score} $reference_genome $fastq > tmp.sam 
+        samtools sort -o ${fastq.simpleName}.bam tmp.sam
+        rm tmp.sam
+        """
+}
+
+process Minimap2Align{
+    // Use standard Minimap2 parameters for alignment, also works with .mmi files.
+    input:
+        tuple val(sample_id), val(fq_id), path(fq)
+        path(reference_genome)
+    
+    output:
+        tuple val(sample_id), val(fq_id), path("${fq.simpleName}.bam")
+
+    script:
+        """
+        minimap2 -ax map-ont -t ${task.cpus} $reference_genome $fq > tmp.sam 
+        samtools sort -o ${fq.simpleName}.bam tmp.sam
         rm tmp.sam
         """
 }

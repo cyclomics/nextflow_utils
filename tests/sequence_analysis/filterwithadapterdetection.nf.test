@@ -1,0 +1,27 @@
+nextflow_workflow {
+
+  name "Test FilterWithAdapterDetection"
+  script "sequence_analysis/subworkflows.nf"
+  workflow "FilterWithAdapterDetection"
+
+  test("Check if read filtering is correct") {
+
+    when {
+      workflow {
+        """
+        sample_id = "SOME_ID_1"
+        file_id = "SOME_ID_2"
+        fq_file = file("$baseDir/example_datasets/example_native_reads/fastq_pass/FAW79986_pass_dbcafcd9_40623079_0.fastq.gz")
+
+        input[0] = Channel.of([sample_id, file_id, fq_file])
+        """
+      }
+    }
+
+    then {
+      assert workflow.success
+      assert snapshot(workflow.out).match()
+    }
+  }
+
+}

@@ -2,6 +2,14 @@
 
 This repo contains resuable processes and workflows for other nextflow pipelines within Cyclomics.
 
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
+[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
+[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
+
+[![nf-test](https://img.shields.io/badge/tested_with-nf--test-337ab7.svg)](https://code.askimed.com/nf-test)
+![Main CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/continuous_integration.yml/badge.svg?branch=main)
+![development CI status](https://github.com/cyclomics/nextflow_utils/actions/workflows/continuous_integration.yml/badge.svg?branch=dev)
+
 ## Folders
 
 ### Consensus
@@ -63,4 +71,29 @@ Code to perform additional actions, wheter its enriching or filtering, on the in
 
 ### Reporting
 Code for visualization and reporting of the results.
+
+
+# Testing lessons learned with nf-test:
+
+1. Only one 'nextflow_process' or 'nextflow_process' can be present per file.
+1. The output of your tuple is nested pretty deep in the process.out object.
+1. Dont compare to large objects, as this makes the stdout hard to read in case of a test failure:
+    ```json
+    def first_line = lines.get(0)
+    assert first_line == "@64fee029-4..."
+    ```
+    is much better than:
+    ```json
+    assert lines.get(0) == "@64fee029-4..."
+    ```
+    as the later will cause the entire lines object to be dumped into stdout, while the prior will only put the first line into your stdout.
+
+1. Regex is kinda weird and undocumented: this fails:
+    ```json
+    assert output_file == ".*/empty_filtered.fastq"
+    ```
+    Buth this passes:
+    ```json
+    assert output_file ==~ ".*/empty_filtered.fastq"
+    ```
 

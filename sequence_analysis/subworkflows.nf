@@ -6,12 +6,16 @@ include {
 } from "./modules/seqkit"
 
 include {
-    AnnotateBamXTags
-} from "./modules/annotate_bam"
+    SplitReadsOnAdapterSequence
+} from "./modules/fillet"
 
-include {
-    BamTagFilter
-} from "./modules/samtools"
+// include {
+//     AnnotateBamXTags
+// } from "./modules/annotate_bam"
+
+// include {
+//     BamTagFilter
+// } from "./modules/samtools"
 
 workflow FilterWithAdapterDetection {
     take:

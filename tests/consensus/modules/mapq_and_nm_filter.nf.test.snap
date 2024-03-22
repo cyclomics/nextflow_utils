@@ -1,0 +1,21 @@
+{
+    "Filtering Mapq and NM": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "SOME_ID_1",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.NM_50_mapq_20",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.NM_50_mapq_20.bam:md5,854ac1bb448ecb65b72e055bbcaf5ee6",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.NM_50_mapq_20.bam.bai:md5,86c925fb4e8860f4700b5582565d73e1"
+                    ]
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.1"
+        },
+        "timestamp": "2024-02-05T15:25:05.238335"
+    }
+}
