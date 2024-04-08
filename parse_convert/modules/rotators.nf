@@ -1,4 +1,6 @@
 process RotateBySequence {
+    publishDir "${params.output_dir}/consensus/${sample_id}", mode: 'copy'
+
     input:
         tuple val(ID), path(fq)
     output:
@@ -14,6 +16,8 @@ process RotateBySequence {
     """
 }
 process RotateByAlignment {
+    publishDir "${params.output_dir}/consensus/${sample_id}", mode: 'copy'
+
     input:
         tuple val(sample_id), val(fq_id), path(bam)
     output:

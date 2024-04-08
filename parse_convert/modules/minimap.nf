@@ -74,8 +74,16 @@ process Minimap2AlignAdaptiveParameterized{
         """
 }
 
-process Minimap2Align{
+process Minimap2Align{    
     // Use standard Minimap2 parameters for alignment, also works with .mmi files.
+    
+    memory {reference_genome.size() > 31_000_000_000 ? "30GB" : "${reference_genome.size() * (1 + task.attempt)}B"}
+    // small jobs get 4 cores, big ones 8
+    cpus (params.economy_mode == true ? 2 :{reference_genome.size() < 500_000_000 ? 4 : 8 })
+    
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
+
     input:
         tuple val(sample_id), val(fq_id), path(fq)
         path(reference_genome)
