@@ -12,7 +12,7 @@ process SamtoolsMergeBams{
         path(bam_in)
 
     output:
-        tuple val(sample_id), path("${sample_id}.merged.bam")
+        tuple val(sample_id), path("${sample_id}.merged.bam"), path("${sample_id}.merged.bam.bai")
     
     script:
     """
