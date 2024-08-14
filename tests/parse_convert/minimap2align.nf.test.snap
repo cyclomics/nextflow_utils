@@ -1,0 +1,21 @@
+{
+    "Check if consensus mapping to reference with Minimap2 is correct": {
+        "content": [
+            {
+                "0": [
+                    [
+                        "SOME",
+                        "SOME.merged.bam:md5,0ba2b393ea70f46ce3882910fc363ac1"
+                    ]
+                ],
+                "bam": [
+                    [
+                        "SOME",
+                        "SOME.merged.bam:md5,0ba2b393ea70f46ce3882910fc363ac1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2024-04-08T16:34:03.857599"
+    }
+}

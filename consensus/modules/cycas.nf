@@ -10,14 +10,14 @@ process Cycas {
     memory = '2G'
 
     input:
-        tuple val(X), path(bam), path(bai)
+        tuple val(sample_id), val(file_id), path(bam), path(bai)
 
     output:
-        tuple val(X), path("${bam.SimpleName}.consensus.fastq"), path("${bam.SimpleName}.metadata.json")
+        tuple val(sample_id), val("${bam.simpleName}.consensus"), path("${bam.simpleName}.consensus.fastq"), path("${bam.simpleName}.metadata.json")
 
     script:
         """
         mkdir -p plots
-        python $params.cycas_location consensus --bam-file $bam --output ${bam.SimpleName}.consensus.fastq --metadata-json  ${bam.SimpleName}.metadata.json
+        python $params.cycas_location consensus --bam-file $bam --output ${bam.simpleName}.consensus.fastq --metadata-json  ${bam.simpleName}.metadata.json
         """
     }

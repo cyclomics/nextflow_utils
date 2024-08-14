@@ -5,10 +5,10 @@ process SamtoolsIndexWithID{
     label 'many_cpu_medium'
 
     input:
-        tuple val(x), path(input_bam) 
+        tuple val(sample_id), val(file_id), path(input_bam) 
 
     output:
-        tuple val(x), path(input_bam), path("*.bai")
+        tuple val(sample_id), val("${input_bam.simpleName}"), path(input_bam), path("*.bai")
 
     script:
         """
@@ -22,15 +22,15 @@ process PrimaryMappedFilter{
     label 'many_cpu_medium'
 
     input:
-        tuple val(X), path(bam_in), path(bai_in)
+        tuple val(sample_id), val(file_id), path(bam_in), path(bai_in)
 
     output:
-        tuple val(X), path("${X}.primary_mapped.bam"), path("${X}.primary_mapped.bam.bai")
+        tuple val(sample_id), val("${bam_in.simpleName}.primary_mapped"), path("${bam_in.simpleName}.primary_mapped.bam"), path("${bam_in.simpleName}.primary_mapped.bam.bai")
 
     script:
         """
-        samtools view -b -F 256 $bam_in > ${X}.primary_mapped.bam
-        samtools index ${X}.primary_mapped.bam
+        samtools view -b -F 256 $bam_in > ${bam_in.simpleName}.primary_mapped.bam
+        samtools index ${bam_in.simpleName}.primary_mapped.bam
         """
 }
 
@@ -40,14 +40,14 @@ process MapqAndNMFilter{
     label 'many_cpu_medium'
 
     input:
-        tuple val(X), path(bam_in), path(bai_in)
+        tuple val(sample_id), val(file_id), path(bam_in), path(bai_in)
 
     output:
-        tuple val(X), path("${X}.NM_50_mapq_20.bam"), path("${X}.NM_50_mapq_20.bam.bai")
+        tuple val(sample_id), val("${bam_in.simpleName}.NM_50_mapq_20"), path("${bam_in.simpleName}.NM_50_mapq_20.bam"), path("${bam_in.simpleName}.NM_50_mapq_20.bam.bai")
 
     script:
         """
-        samtools view -b -o ${X}.NM_50_mapq_20.bam $bam_in --input-fmt-option 'filter=[NM]<50 && mapq >20'
-        samtools index ${X}.NM_50_mapq_20.bam
+        samtools view -b -o ${bam_in.simpleName}.NM_50_mapq_20.bam $bam_in --input-fmt-option 'filter=[NM]<50 && mapq >20'
+        samtools index ${bam_in.simpleName}.NM_50_mapq_20.bam
         """
 }

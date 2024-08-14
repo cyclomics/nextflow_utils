@@ -4,13 +4,13 @@ process RotateBySequence {
     output:
         tuple val(ID), path("*.rotated.fq")
     script:
-    """
-    if [[ -f "${params.rotator_location}/rotate_by_sequence.py" ]]; then
-        python ${params.rotator_location}/rotate_by_sequence.py $fq ${fq.SimpleName}.rotated.fq
-    else
-        echo "Rotator submodule not found, please add it using git submodules to this pipeline."
-        exit 1
-    fi
+        """
+        if [[ -f "${params.rotator_location}/rotate_by_sequence.py" ]]; then
+            python ${params.rotator_location}/rotate_by_sequence.py $fq ${fq.SimpleName}.rotated.fq
+        else
+            echo "Rotator submodule not found, please add it using git submodules to this pipeline."
+            exit 1
+        fi
     """
 }
 process RotateByAlignment {

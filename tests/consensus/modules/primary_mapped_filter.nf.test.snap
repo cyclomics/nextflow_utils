@@ -4,13 +4,18 @@
             {
                 "0": [
                     [
-                        "test_sample",
-                        "test_sample.primary_mapped.bam:md5,a4df4798720072ca05d23674957c7f2e",
-                        "test_sample.primary_mapped.bam.bai:md5,bffe1c97be07864c1acde1ca96c024df"
+                        "SOME_ID_1",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.primary_mapped",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.primary_mapped.bam:md5,a4df4798720072ca05d23674957c7f2e",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.primary_mapped.bam.bai:md5,bffe1c97be07864c1acde1ca96c024df"
                     ]
                 ]
             }
         ],
-        "timestamp": "2024-01-10T16:54:39.119735"
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.1"
+        },
+        "timestamp": "2024-02-05T15:25:09.818274"
     }
 }

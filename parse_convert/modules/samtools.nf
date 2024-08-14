@@ -3,21 +3,20 @@ nextflow.enable.dsl=2
 
 process SamtoolsMergeBams{
     //  merge n number of bams into one
-    // publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
+    publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
 
     label 'many_cpu_medium'
 
     input:
-        val(X)
-        file(bam_in)
+        val(sample_id)
+        path(bam_in)
 
     output:
-        tuple val(X), path("${X}.merged.bam"), path("${X}.merged.bam.bai")
+        tuple val(sample_id), path("${sample_id}.merged.bam"), path("${sample_id}.merged.bam.bai")
     
     script:
     """
-    ls
-    samtools merge -p -c -O bam ${X}.merged.bam \$(find . -name '*.bam')
-    samtools index ${X}.merged.bam
+    samtools merge -p -c -O bam ${sample_id}.merged.bam \$(find . -name '*.bam')
+    samtools index ${sample_id}.merged.bam
     """
 }

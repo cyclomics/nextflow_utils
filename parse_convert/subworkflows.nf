@@ -56,10 +56,12 @@ workflow Minimap2Align {
         reference
 
     main:
-        Minimap2AlignAdaptive(reads.map(it -> it[1]), reference)
-        id = reads.first().map(it -> it[0])
-        id = id.map(it -> it.split('_')[0])       
-        SamtoolsMergeBams(id, Minimap2AlignAdaptive.out)
+        id = reads.first().map( it -> it[0])
+        id = id.map(it -> it.split('_')[0])
+        Minimap2AlignAdaptive(reads, reference)
+        // id = Minimap2AlignAdaptive.out.map(it -> it[0].split('_')[0])
+        bams = Minimap2AlignAdaptive.out.map(it -> it[2]).collect()
+        SamtoolsMergeBams(id, bams)
 
     emit:
         bam = SamtoolsMergeBams.out

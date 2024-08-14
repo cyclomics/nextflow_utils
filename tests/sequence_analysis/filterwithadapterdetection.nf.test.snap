@@ -1,12 +1,12 @@
 {
-    "Minimap test output": {
+    "Check if read filtering is correct": {
         "content": [
             {
                 "0": [
                     [
                         "SOME_ID_1",
-                        "ABC0001_0",
-                        "ABC0001_0.bam:md5,f3d25d6f0af98d3452ba22e78f29da98"
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered",
+                        "FAW79986_pass_dbcafcd9_40623079_0_filtered.fastq:md5,b43c6c664b0d8a96f1c3943bcbdf33e8"
                     ]
                 ]
             }
@@ -15,6 +15,6 @@
             "nf-test": "0.8.4",
             "nextflow": "23.04.1"
         },
-        "timestamp": "2024-02-05T15:24:52.921717"
+        "timestamp": "2024-02-05T15:58:22.106656"
     }
 }
