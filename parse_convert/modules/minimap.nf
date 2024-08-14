@@ -50,9 +50,9 @@ process Minimap2AlignAdaptiveParameterized{
     // label 'minimap_large'
     // set memory requirement to 6, 12, then 18 GB 
     // most human genomes will fit in 12 GB
-    memory "6GB" * task.attempt
+    memory {"6GB" * task.attempt }
     // small jobs get 2 cores, big ones 8
-    cpus (params.economy_mode == true ? 2 : 8 )
+    cpus params.economy_mode == true ? 2 : 8
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
@@ -69,7 +69,7 @@ process Minimap2AlignAdaptiveParameterized{
     script:
     // Lower parameters to increase data available to cycas
         """
-        minimap2 -ax map-ont -t ${task.cpus} -m ${params.minimap2parameterized.min_chain_score} -n ${params.minimap2parameterized.min_chain_count} -s ${params.minimap2parameterized.min_peak_aln_score} $reference_genome $fastq | samtools -@ 2 sort -o ${fastq.simpleName}.bam tmp.sam
+        minimap2 -ax map-ont -t ${task.cpus} -m ${params.minimap2parameterized.min_chain_score} -n ${params.minimap2parameterized.min_chain_count} -s ${params.minimap2parameterized.min_peak_aln_score} $reference_genome $fastq | samtools sort -o ${fastq.simpleName}.bam
         """
 }
 

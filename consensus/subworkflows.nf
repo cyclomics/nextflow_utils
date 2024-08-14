@@ -88,6 +88,7 @@ workflow CycasConsensus {
         reference_genome
 
     main:
+        // Its the callers responsibility to make sure reference_genome is a value channel
         Minimap2AlignAdaptiveParameterized(read_fastq, reference_genome)
         SamtoolsIndexWithID(Minimap2AlignAdaptiveParameterized.out)
         PrimaryMappedFilter(SamtoolsIndexWithID.out)
