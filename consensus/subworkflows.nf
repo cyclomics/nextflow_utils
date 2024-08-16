@@ -73,9 +73,12 @@ workflow CygnusAlignedConsensus {
 workflow CygnusPrimedConsensus {
     take:
         reads_fastq
+        primers
 
     main:
-        Cygnus(reads)
+        // Its the callers responsibility to make sure primers is a value channel
+        Cygnus(reads_fastq)
+        RotateBySequence(Cygnus.out, primers)
 
     emit:
         fastq = Cygnus.out

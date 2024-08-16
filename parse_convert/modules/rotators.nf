@@ -1,12 +1,17 @@
 process RotateBySequence {
+    container = "cyclomics/rotators:0.1.1"
+    cpus 1
+    memory "2GB"
+
     input:
-        tuple val(ID), path(fq)
+        tuple val(sample_id), val(fq_id), path(fq)
+        path(primers)
     output:
-        tuple val(ID), path("*.rotated.fq")
+        tuple val(sample_id), val(fq_id), path("*.rotated.fq")
     script:
         """
         if [[ -f "${params.rotator_location}/rotate_by_sequence.py" ]]; then
-            python ${params.rotator_location}/rotate_by_sequence.py $fq ${fq.SimpleName}.rotated.fq
+            python ${params.rotator_location}/rotate_by_sequence.py $fq $primers ${fq.SimpleName}.rotated.fq
         else
             echo "Rotator submodule not found, please add it using git submodules to this pipeline."
             exit 1
@@ -17,6 +22,7 @@ process RotateByAlignment {
     container = "cyclomics/rotators:0.1.1"
     cpus 1
     memory "2GB"
+
     input:
         tuple val(sample_id), val(fq_id), path(bam)
     output:
