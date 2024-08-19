@@ -95,26 +95,3 @@ process Minimap2Align{
         rm tmp.sam
         """
 }
-
-process Minimap2AlignByID{
-    // Use standard Minimap2 parameters for alignment, also works with .mmi files.
-    cpus = 14
-
-    // *1.8 for T2T gives 13.5 for the first try and 27 for the second
-    // Thus fitting within 32GB systems (which have less than 32 in reality)
-    // Small refs below 1GB get 4GB per task retry (4,8,12)
-    memory = {reference_genome.size() > 1_000_000_000 ? Math.round(reference_genome.size()*1.8 * task.attempt) : "4GB"* task.attempt}
-    input:
-        tuple val(sample_id), val(fq_id), path(fq)
-        path(reference_genome)
-    
-    output:
-        tuple val(sample_id), val(sample_id), path("${sample_id}.bam")
-
-    script:
-        """
-        minimap2 -ax map-ont -t ${task.cpus} $reference_genome $fq > tmp.sam 
-        samtools sort -o ${sample_id}.bam tmp.sam
-        rm tmp.sam
-        """
-}
