@@ -1,5 +1,5 @@
 process RotateBySequence {
-    container = "cyclomics/rotators:0.1.1"
+    container = "cyclomics/rotators:0.1.2"
     cpus 1
     memory "2GB"
 
@@ -19,7 +19,7 @@ process RotateBySequence {
     """
 }
 process RotateByAlignment {
-    container = "cyclomics/rotators:0.1.1"
+    container = "cyclomics/rotators:0.1.2"
     cpus 1
     memory "2GB"
 

@@ -2,7 +2,7 @@
 nextflow.enable.dsl = 2
 
 process Cygnus {
-    container = "cyclomics/cygnus:0.6.5"
+    container = "cyclomics/cygnus:0.6.6"
     cpus 1
     memory = '2G'
 

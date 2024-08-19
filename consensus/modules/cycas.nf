@@ -5,7 +5,7 @@ process Cycas {
     // publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
     // publishDir "${params.output_dir}/consensus", mode: 'copy'
     label 'many_low_cpu_tiny_mem'
-    container = "cyclomics/cycas:0.5.1"
+    container = "cyclomics/cycas:0.5.2"
     cpus 1
     memory = '2G'
 
