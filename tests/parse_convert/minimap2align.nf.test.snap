@@ -5,14 +5,14 @@
                 "0": [
                     [
                         "SOME",
-                        "SOME.merged.bam:md5,74d7580cd6490a15971867f30a77a37b",
+                        "SOME.merged.bam:md5,ac43e3bc65c596892a9457641767a800",
                         "SOME.merged.bam.bai:md5,17a747bf6cbe9f59d8cfc7f8fbfd4312"
                     ]
                 ],
                 "bam": [
                     [
                         "SOME",
-                        "SOME.merged.bam:md5,74d7580cd6490a15971867f30a77a37b",
+                        "SOME.merged.bam:md5,ac43e3bc65c596892a9457641767a800",
                         "SOME.merged.bam.bai:md5,17a747bf6cbe9f59d8cfc7f8fbfd4312"
                     ]
                 ]
