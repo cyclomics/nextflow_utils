@@ -7,6 +7,9 @@ nextflow_workflow {
     test("Check if consensus generation is correct") {
 
         when {
+            params {
+                cycas_location = "/app/cycas/cycas.py"
+                }
             workflow {
                 """
                 sample_id = "SOME_ID_1"

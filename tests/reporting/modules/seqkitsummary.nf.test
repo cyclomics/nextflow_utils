@@ -24,7 +24,8 @@ nextflow_process {
             assert process.success
             // bulky but it works...
             // CG content will be addedin future releases.
-            assert process.out[0][0] == 'Summarizing reads for__: test_sample\nExample file name______: FAW79986_pass_dbcafcd9_40623079_10.fastq.gz\nnumber of files________: 2\ncombined statistics for the sample:\nfile  format  type  num_seqs     sum_len  min_len  avg_len  max_len       Q1     Q2     Q3  sum_gap    N50  Q20(%)  Q30(%)\n-     FASTQ   DNA      8,000  31,078,276       50  3,884.8   25,494  2,439.5  3,402  4,802        0  4,417   80.97    62.1\n'
+            def report_output = process.out.get(0).get(0)
+            assert report_output == 'Summarizing reads for__: test_sample\nExample file name______: FAW79986_pass_dbcafcd9_40623079_10.fastq.gz\nnumber of files________: 2\ncombined statistics for the sample:\nfile  format  type  num_seqs     sum_len  min_len  avg_len  max_len       Q1     Q2     Q3  sum_gap    N50  Q20(%)  Q30(%)\n-     FASTQ   DNA      8,000  31,078,276       50  3,884.8   25,494  2,439.5  3,402  4,802        0  4,417   80.97    62.1\n'
         }
     }
 }

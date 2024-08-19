@@ -8,6 +8,9 @@ nextflow_process {
     test("Cycas consensus") {
 
         when {
+            params {
+                cycas_location = "/app/cycas/cycas.py"
+                }
             process {
                 """
                 sample_id = "SOME_ID_1"

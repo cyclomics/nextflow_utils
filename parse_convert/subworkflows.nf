@@ -66,31 +66,3 @@ workflow Minimap2Align {
     emit:
         bam = SamtoolsMergeBams.out
 }
-
-// workflow BWAAlign{
-//     take:
-//         reads
-//         reference
-
-//     main:
-//         bwa_idx = file("${params.reference}.{,amb,ann,bwt,pac,sa}")
-//         bwa_index_file_count = 5
-//         // We do a smaller than since there might be a .fai file as well!
-//         if (bwa_idx.size < bwa_index_file_count) {
-//             println "==================================="
-//             println "Warning! BWA index files are missing for the reference genome, This will slowdown execution in a major way."
-//             println "==================================="
-//             println ""
-//             println ""
-//             bwa_idx = BwaIndex(reference)
-//         }
-        
-//         id = reads.first().map(it -> it[0])
-//         id = id.map(it -> it.split('_')[0])
-//         reads_fastq = reads.map(it -> it[1])
-//         BwaMemSorted(reads_fastq, reference, bwa_idx.collect())
-//         SamtoolsMergeBams(id, BwaMemSorted.out.collect())
-
-//     emit:
-//         bam = SamtoolsMergeBams.out
-// }
