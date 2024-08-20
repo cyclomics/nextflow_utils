@@ -52,7 +52,7 @@ process Minimap2AlignAdaptiveParameterized{
     // Thus fitting within 32GB systems (which have less than 32 in reality)
     // Small refs below 1GB get 4GB per task retry (4,8,12)
     memory = {reference_genome.size() > 1_000_000_000 ? Math.round(reference_genome.size()*1.8 * task.attempt) : "4GB"* task.attempt}
-    cpus params.economy_mode == true ? 2 : 8
+    cpus params.economy_mode == true ? 2 : 7
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
@@ -73,14 +73,17 @@ process Minimap2AlignAdaptiveParameterized{
         """
 }
 
-process Minimap2Align{
+process Minimap2Align{    
     // Use standard Minimap2 parameters for alignment, also works with .mmi files.
-    cpus = 14
-
+    cpus params.economy_mode == true ? 2 : 7
+    
     // *1.8 for T2T gives 13.5 for the first try and 27 for the second
     // Thus fitting within 32GB systems (which have less than 32 in reality)
     // Small refs below 1GB get 4GB per task retry (4,8,12)
     memory = {reference_genome.size() > 1_000_000_000 ? Math.round(reference_genome.size()*1.8 * task.attempt) : "4GB"* task.attempt}
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
+
     input:
         tuple val(sample_id), val(fq_id), path(fq)
         path(reference_genome)

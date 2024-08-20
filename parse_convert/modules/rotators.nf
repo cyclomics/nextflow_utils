@@ -1,4 +1,6 @@
 process RotateBySequence {
+    publishDir "${params.output_dir}/consensus/${sample_id}", mode: 'copy'
+    
     container = "cyclomics/rotators:0.1.2"
     cpus 1
     memory "2GB"
@@ -19,6 +21,8 @@ process RotateBySequence {
     """
 }
 process RotateByAlignment {
+    publishDir "${params.output_dir}/consensus/${sample_id}", mode: 'copy'
+
     container = "cyclomics/rotators:0.1.2"
     cpus 1
     memory "2GB"
