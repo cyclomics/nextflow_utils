@@ -9,7 +9,7 @@ process SummerizeReadsStdout{
 
     script:
         """
-        echo summarizing reads for__: $sample_ID
+        echo Summarizing reads for__: $sample_ID
         echo Example file name______: ${samples.first()}
         echo number of files________: ${samples.size()}
         echo combined statistics for the sample:
