@@ -19,3 +19,21 @@ process PerbaseBaseDepth {
     perbase base-depth -F 256 -D 4000000 -t $task.cpus -z -b $bed --ref-fasta $reference $input_bam_file > $output_name
     """
 }
+
+process PerbaseBaseDepthFull {
+    // Process all mapped positions with perbase base-depth
+    label 'few_very_memory_intensive'
+
+    input:
+        tuple val(sample_id), val(file_id), path(bam), path(bai)
+        path(reference)
+
+    output:
+        tuple val(sample_id), val(file_id), path("${bam.simpleName}_perbase.tsv")
+
+    script:
+    """
+    samtools faidx $reference
+    perbase base-depth -F 256 -D 4000000 -t $task.cpus -z --ref-fasta $reference $bam > ${bam.simpleName}_perbase.tsv
+    """
+}
