@@ -6,6 +6,10 @@ include {
 } from "./modules/cygnus"
 
 include {
+    Cygnus2
+} from "./modules/cygnus2"
+
+include {
     Cycas
 } from "./modules/cycas"
 
@@ -42,13 +46,10 @@ include {
 workflow CygnusConsensus {
     take:
         reads_fastq
-
     main:
         Cygnus(reads)
-        RotateBySequence(Cygnus.out)
-
     emit:
-        fastq = RotateBySequence.out
+        fastq = Cygnus.out
 
 }
 
@@ -56,7 +57,6 @@ workflow CygnusAlignedConsensus {
     take:
         reads_fastq
         reference
-
     main:
         // 1. Create reads
         Cygnus(reads_fastq)
@@ -65,24 +65,57 @@ workflow CygnusAlignedConsensus {
         Minimap2Align(consensus, reference)
         // 3. Rotate by alignment
         RotateByAlignment(Minimap2Align.out)
-
     emit:
         fastq = RotateByAlignment.out
-
 }
+
 workflow CygnusPrimedConsensus {
     take:
         reads_fastq
         primers
-
     main:
         // Its the callers responsibility to make sure primers is a value channel
         Cygnus(reads_fastq)
         RotateBySequence(Cygnus.out, primers)
-
     emit:
-        fastq = Cygnus.out
+        fastq = RotateBySequence.out
+}
 
+workflow Cygnus2Consensus {
+    take:
+        reads_fastq
+    main:
+        Cygnus2(reads)
+    emit:
+        fastq = Cygnus2.out
+}
+
+workflow Cygnus2PrimedConsensus {
+    take:
+        reads_fastq
+        primers
+    main:
+        // Its the callers responsibility to make sure primers is a value channel
+        Cygnus2(reads_fastq)
+        RotateBySequence(Cygnus2.out, primers)
+    emit:
+        fastq = RotateBySequence.out
+}
+
+workflow Cygnus2AlignedConsensus {
+    take:
+        reads_fastq
+        reference
+    main:
+        // 1. Create reads
+        Cygnus2(reads_fastq)
+        consensus = Cygnus2.out
+        // 2. Align the reads
+        Minimap2Align(consensus, reference)
+        // 3. Rotate by alignment
+        RotateByAlignment(Minimap2Align.out)
+    emit:
+        fastq = RotateByAlignment.out
 }
 
 workflow CycasConsensus {
