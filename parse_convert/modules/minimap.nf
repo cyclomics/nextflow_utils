@@ -58,16 +58,14 @@ process Minimap2AlignAdaptiveParameterized{
     maxRetries 3
 
     input:
-        // each path(fastq)
         tuple val(sample_id), val(file_id), path(fastq)
         path(reference_genome)
 
-
     output:
-        tuple val(sample_id), val("${fastq.simpleName}"), path("${fastq.simpleName}.bam") 
+        tuple val(sample_id), val(file_id), path("${fastq.simpleName}.bam") 
 
     script:
-    // Lower parameters to increase data available to cycas
+        //Normally used with lower parameters to increase data available to cycas
         """
         minimap2 -ax map-ont -t ${task.cpus} -m ${params.minimap2parameterized.min_chain_score} -n ${params.minimap2parameterized.min_chain_count} -s ${params.minimap2parameterized.min_peak_aln_score} $reference_genome $fastq | samtools sort -o ${fastq.simpleName}.bam
         """

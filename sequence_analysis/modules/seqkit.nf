@@ -6,7 +6,7 @@ process FilterShortReads{
         tuple val(sample_id), val(file_id), path(fq)
 
     output:
-        tuple val(sample_id), val("${fq.simpleName}_filtered"), path("${fq.simpleName}_filtered.fastq")
+        tuple val(sample_id), val(file_id), path("${fq.simpleName}_filtered.fastq")
 
     script:
         """

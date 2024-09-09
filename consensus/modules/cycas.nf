@@ -13,7 +13,7 @@ process Cycas {
         tuple val(sample_id), val(file_id), path(bam), path(bai)
 
     output:
-        tuple val(sample_id), val("${bam.simpleName}.consensus"), path("${bam.simpleName}.consensus.fastq"), path("${bam.simpleName}.metadata.json")
+        tuple val(sample_id), val(file_id), path("${bam.simpleName}.consensus.fastq"), path("${bam.simpleName}.metadata.json")
 
     script:
         """

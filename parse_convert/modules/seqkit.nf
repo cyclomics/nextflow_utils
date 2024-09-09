@@ -23,10 +23,10 @@ process FilterShortReads{
     publishDir "${params.output_dir}/QC", mode: 'copy'
     
     input:
-        path(fastq)
+        tuple val(sample_id), val(fq_id), path(fastq)
 
     output:
-        path ("${fastq.simpleName}_filtered.fastq")
+        tuple val(sample_id), val(fq_id), path ("${fastq.simpleName}_filtered.fastq")
 
     script:
         """

@@ -8,7 +8,7 @@ process SamtoolsIndexWithID{
         tuple val(sample_id), val(file_id), path(input_bam) 
 
     output:
-        tuple val(sample_id), val("${input_bam.simpleName}"), path(input_bam), path("*.bai")
+        tuple val(sample_id), val(file_id), path(input_bam), path("*.bai")
 
     script:
         """
@@ -25,7 +25,7 @@ process PrimaryMappedFilter{
         tuple val(sample_id), val(file_id), path(bam_in), path(bai_in)
 
     output:
-        tuple val(sample_id), val("${bam_in.simpleName}.primary_mapped"), path("${bam_in.simpleName}.primary_mapped.bam"), path("${bam_in.simpleName}.primary_mapped.bam.bai")
+        tuple val(sample_id), val(file_id), path("${bam_in.simpleName}.primary_mapped.bam"), path("${bam_in.simpleName}.primary_mapped.bam.bai")
 
     script:
         """
@@ -43,7 +43,7 @@ process MapqAndNMFilter{
         tuple val(sample_id), val(file_id), path(bam_in), path(bai_in)
 
     output:
-        tuple val(sample_id), val("${bam_in.simpleName}.NM_50_mapq_20"), path("${bam_in.simpleName}.NM_50_mapq_20.bam"), path("${bam_in.simpleName}.NM_50_mapq_20.bam.bai")
+        tuple val(sample_id), val(file_id), path("${bam_in.simpleName}.NM_50_mapq_20.bam"), path("${bam_in.simpleName}.NM_50_mapq_20.bam.bai")
 
     script:
         """

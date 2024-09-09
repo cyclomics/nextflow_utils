@@ -20,3 +20,20 @@ process SamtoolsMergeBams{
     samtools index ${sample_id}.merged.bam
     """
 }
+
+process SamtoolsIndexBam{
+    // Given a bam file add the index file to the tuple
+    publishDir "${params.output_dir}/${task.process.replaceAll(':', '/')}", pattern: "", mode: 'copy'
+
+    label 'many_cpu_medium'
+
+    input:
+        tuple val(sample_id), val(fq_id), path(bam)
+
+    output:
+        tuple val(sample_id), val(fq_id), path(bam), path("*.bai")    
+    script:
+    """
+    samtools index $bam
+    """
+}
