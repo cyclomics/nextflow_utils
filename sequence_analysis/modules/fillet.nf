@@ -6,7 +6,7 @@ process SplitReadsOnAdapterSequence {
         tuple val(sample_id), val(file_id), path(fq)
 
     output:
-        tuple val(sample_id), val("${fq.simpleName}_split"), path("results/${fq.simpleName}_split.fastq.gz")
+        tuple val(sample_id), val(file_id), path("results/${fq.simpleName}_split.fastq.gz")
         
     script:
         """
