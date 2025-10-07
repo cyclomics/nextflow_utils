@@ -85,7 +85,7 @@ workflow Cygnus2Consensus {
     take:
         reads_fastq
     main:
-        Cygnus2(reads)
+        Cygnus2(reads_fastq)
     emit:
         fastq = Cygnus2.out
 }

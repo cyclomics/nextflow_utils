@@ -17,23 +17,22 @@ process MergeFasta {
 
 }
 
-
-process FilterShortReads{
+process SplitReadFiles{
     label 'many_cpu_medium'
-    publishDir "${params.output_dir}/QC", mode: 'copy'
     
     input:
         tuple val(sample_id), val(fq_id), path(fastq)
 
     output:
-        tuple val(sample_id), val(fq_id), path ("${fastq.simpleName}_filtered.fastq")
+        tuple val(sample_id), val(fq_id), path ("split/${fastq.simpleName}_part_*.fastq*")
 
     script:
+        // Split the fastq file into smaller files if they are more than reads_per_fq read
+        // --by-size-prefix prevents . in the filenames, which can cause issues like filename collisions with .simpleName
         """
-        seqkit seq -m ${params.filtering.minimun_raw_length} $fastq > "${fastq.simpleName}_filtered.fastq"
+        seqkit split --by-size ${params.splitting.reads_per_fq} --by-size-prefix ${fastq.simpleName}_part_ -O split $fastq
         """
 }
-
 
 
 process Extract5PrimeFasta {
